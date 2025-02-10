@@ -12,8 +12,10 @@ type task struct {
 	Mytask string `json:"mytask"`
 }
 
+var mTask string
+
 func HelloHandler(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintln(w, "hello, world")
+	fmt.Fprintf(w, "hello, %s", mTask)
 }
 
 func PostHandler(w http.ResponseWriter, r *http.Request) {
@@ -24,6 +26,7 @@ func PostHandler(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			panic(err)
 		}
+		mTask = n0.Mytask
 		fmt.Println("Получено значени:", n0.Mytask)
 
 	}
