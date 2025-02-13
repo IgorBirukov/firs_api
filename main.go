@@ -16,7 +16,17 @@ type task struct {
 var mTask string
 
 func HelloHandler(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "hello, %s", mTask)
+	//var tasks []Task
+	w.Header().Set("Content-Type", "application/json")
+	var result []struct {
+		Task string
+	}
+	DB.Table("tasks").Select("task").Scan(&result)
+	//DB.Model(&Task{}).Select("task").Find(&tasks)
+	//DB.Find(&tasks)
+	json.NewEncoder(w).Encode(result)
+	fmt.Println(result)
+	//fmt.Fprintf(w, "hello, %s", mTask)
 }
 
 func PostHandler(w http.ResponseWriter, r *http.Request) {
