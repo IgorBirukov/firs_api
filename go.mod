@@ -2,7 +2,11 @@ module first_api
 
 go 1.23.4
 
-require github.com/gorilla/mux v1.8.1
+require (
+	github.com/gorilla/mux v1.8.1
+	gorm.io/driver/postgres v1.5.11
+	gorm.io/gorm v1.25.12
+)
 
 require (
 	github.com/jackc/pgpassfile v1.0.0 // indirect
@@ -14,6 +18,4 @@ require (
 	golang.org/x/crypto v0.33.0 // indirect
 	golang.org/x/sync v0.11.0 // indirect
 	golang.org/x/text v0.22.0 // indirect
-	gorm.io/driver/postgres v1.5.11 // indirect
-	gorm.io/gorm v1.25.12 // indirect
 )
