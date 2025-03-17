@@ -11,8 +11,8 @@ import (
 type TaskRepository interface {
 	CreateTask(task Task) (Task, error)
 	GetAllTask() ([]Task, error)
-	UpdateTaskByID(id string, task interface{}) (Task, error)
-	DeleteTaskByID(id string) (res int, err error)
+	UpdateTaskByID(id uint, task interface{}) (Task, error)
+	DeleteTaskByID(id uint) (res int, err error)
 }
 
 type taskRepository struct {
@@ -37,7 +37,7 @@ func (r *taskRepository) GetAllTask() ([]Task, error) {
 	return tasks, err
 }
 
-func (r *taskRepository) UpdateTaskByID(id string, task interface{}) (Task, error) {
+func (r *taskRepository) UpdateTaskByID(id uint, task interface{}) (Task, error) {
 
 	fmt.Println(task)
 	var fTask Task
@@ -57,7 +57,7 @@ func (r *taskRepository) UpdateTaskByID(id string, task interface{}) (Task, erro
 
 }
 
-func (r *taskRepository) DeleteTaskByID(id string) (res int, err error) {
+func (r *taskRepository) DeleteTaskByID(id uint) (res int, err error) {
 	var ftask Task
 	erro := r.db.First(&ftask, id)
 	fmt.Println(&ftask)
