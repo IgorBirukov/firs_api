@@ -178,7 +178,7 @@ type DeleteTasksId200Response struct {
 }
 
 func (response DeleteTasksId200Response) VisitDeleteTasksIdResponse(w http.ResponseWriter) error {
-	w.WriteHeader(200)
+	w.WriteHeader(204)
 	return nil
 }
 
