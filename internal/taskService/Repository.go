@@ -3,7 +3,6 @@ package taskService
 import (
 	"fmt"
 	"net/http"
-	"reflect"
 
 	"gorm.io/gorm"
 )
@@ -13,6 +12,8 @@ type TaskRepository interface {
 	GetAllTask() ([]Task, error)
 	UpdateTaskByID(id uint, task interface{}) (Task, error)
 	DeleteTaskByID(id uint) (res int, err error)
+	GetTasksByUserID(userId uint) (res []Task, err error)
+	PostTask(task Task) (Task, error)
 }
 
 type taskRepository struct {
@@ -39,16 +40,13 @@ func (r *taskRepository) GetAllTask() ([]Task, error) {
 
 func (r *taskRepository) UpdateTaskByID(id uint, task interface{}) (Task, error) {
 
-	fmt.Println(task)
 	var fTask Task
 	err := r.db.First(&fTask, id).Error
-	fmt.Println(reflect.TypeOf(task))
-	//fmt.Println(reflect.TypeOf(taskService.Task))
+
 	if err != nil {
 		return Task{}, err
 	}
 
-	fmt.Println(&fTask)
 	result := r.db.Model(&fTask).Updates(task)
 	if result.Error != nil {
 		return Task{}, result.Error
@@ -72,4 +70,21 @@ func (r *taskRepository) DeleteTaskByID(id uint) (res int, err error) {
 		return http.StatusNotFound, result.Error
 	}
 	return http.StatusNoContent, result.Error
+}
+
+func (r *taskRepository) GetTasksByUserID(userId uint) (res []Task, err error) {
+
+	var tasks []Task
+	if err := r.db.Where("user_id = ?", userId).Find(&tasks).Error; err != nil {
+		return nil, err
+	}
+	return tasks, nil
+}
+
+func (r *taskRepository) PostTask(task Task) (Task, error) {
+	result := r.db.Create(&task)
+	if result.Error != nil {
+		return Task{}, result.Error
+	}
+	return task, nil
 }

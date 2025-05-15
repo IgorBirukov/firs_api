@@ -43,12 +43,11 @@ func (r *userRepository) UpdateUserByID(id uint, user interface{}) (User, error)
 	var fUser User
 	err := r.db.First(&fUser, id).Error
 	fmt.Println(reflect.TypeOf(user))
-	//fmt.Println(reflect.TypeOf(taskService.Task))
+
 	if err != nil {
 		return User{}, err
 	}
 
-	fmt.Println(&fUser)
 	result := r.db.Model(&fUser).Updates(user)
 	if result.Error != nil {
 		return User{}, result.Error

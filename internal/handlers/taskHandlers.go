@@ -11,6 +11,27 @@ type Handler struct {
 	Service *taskService.TaskService
 }
 
+// GetTasksId implements tasks.StrictServerInterface.
+func (h *Handler) GetTasksId(ctx context.Context, request tasks.GetTasksIdRequestObject) (tasks.GetTasksIdResponseObject, error) {
+	allTasks, err := h.Service.GetTasksByUserID(uint(request.Id))
+	if err != nil {
+		return nil, err
+	}
+
+	responce := tasks.GetTasksId200JSONResponse{}
+
+	for _, tsk := range allTasks {
+		task := tasks.Task{
+			Id:     &tsk.ID,
+			Task:   &tsk.Task,
+			IsDone: &tsk.IsDone,
+		}
+		responce = append(responce, task)
+	}
+
+	return responce, nil
+}
+
 // DeleteTasksId implements tasks.StrictServerInterface.
 func (h *Handler) DeleteTasksId(ctx context.Context, request tasks.DeleteTasksIdRequestObject) (tasks.DeleteTasksIdResponseObject, error) {
 
@@ -21,7 +42,7 @@ func (h *Handler) DeleteTasksId(ctx context.Context, request tasks.DeleteTasksId
 	}
 
 	if resDell == 204 {
-		response := tasks.DeleteTasksId200Response{}
+		response := tasks.DeleteTasksId204Response{}
 		return response, nil
 	}
 	return tasks.DeleteTasksId400Response{}, nil
@@ -55,6 +76,7 @@ func (h *Handler) PatchTasksId(ctx context.Context, request tasks.PatchTasksIdRe
 	return response, nil
 }
 
+/* Старый гет
 // GetTasks implements tasks.StrictServerInterface.
 func (h *Handler) GetTasks(ctx context.Context, request tasks.GetTasksRequestObject) (tasks.GetTasksResponseObject, error) {
 	allTasks, err := h.Service.GetAllTask()
@@ -75,6 +97,28 @@ func (h *Handler) GetTasks(ctx context.Context, request tasks.GetTasksRequestObj
 
 	return responce, nil
 }
+*/
+
+// GetTasks implements tasks.StrictServerInterface.
+func (h *Handler) GetTasksByUserID(ctx context.Context, request tasks.GetTasksIdRequestObject) (tasks.GetTasksIdResponseObject, error) {
+	allTasks, err := h.Service.GetTasksByUserID(uint(request.Id))
+	if err != nil {
+		return nil, err
+	}
+
+	responce := tasks.GetTasksId200JSONResponse{}
+
+	for _, tsk := range allTasks {
+		task := tasks.Task{
+			Id:     &tsk.ID,
+			Task:   &tsk.Task,
+			IsDone: &tsk.IsDone,
+		}
+		responce = append(responce, task)
+	}
+
+	return responce, nil
+}
 
 // PostTasks implements tasks.StrictServerInterface.
 func (h *Handler) PostTasks(ctx context.Context, request tasks.PostTasksRequestObject) (tasks.PostTasksResponseObject, error) {
@@ -82,6 +126,9 @@ func (h *Handler) PostTasks(ctx context.Context, request tasks.PostTasksRequestO
 	taskToCreate := taskService.Task{
 		Task:   *taskRequest.Task,
 		IsDone: *taskRequest.IsDone,
+
+		//+ 18.04.2025
+		UserID: *taskRequest.UserId,
 	}
 	createdTask, err := h.Service.CreateTask(taskToCreate)
 
@@ -93,10 +140,14 @@ func (h *Handler) PostTasks(ctx context.Context, request tasks.PostTasksRequestO
 		Id:     &createdTask.ID,
 		Task:   &createdTask.Task,
 		IsDone: &createdTask.IsDone,
+		//+ 18.04.2025
+		UserId: &createdTask.UserID,
 	}
 
 	return response, nil
 }
+
+//func (h *Handler) GetTasksByUserID(ctx context.Context, request task.Get)
 
 func NewHandler(service *taskService.TaskService) *Handler {
 	return &Handler{

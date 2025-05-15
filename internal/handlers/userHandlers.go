@@ -20,7 +20,7 @@ func (h *HandlerUser) DeleteUsersId(ctx context.Context, request users.DeleteUse
 	}
 
 	if resDell == 204 {
-		response := users.DeleteUsersId200Response{}
+		response := users.DeleteUsersId204Response{}
 		return response, nil
 	}
 	return users.DeleteUsersId400Response{}, nil

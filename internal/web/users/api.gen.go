@@ -8,21 +8,33 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
-	//"time"
+	"time"
 
 	"github.com/labstack/echo/v4"
 	"github.com/oapi-codegen/runtime"
 	strictecho "github.com/oapi-codegen/runtime/strictmiddleware/echo"
 )
 
+// Task defines model for Task.
+type Task struct {
+	Id     *uint   `json:"id,omitempty"`
+	IsDone *bool   `json:"is_done,omitempty"`
+	Task   *string `json:"task,omitempty"`
+	User   *User   `json:"user,omitempty"`
+
+	// UserId ID пользователя, которому принадлежит задача
+	UserId *uint `json:"user_id,omitempty"`
+}
+
 // User defines model for User.
 type User struct {
-	//CreatedAt *time.Time `json:"created_at,omitempty"`
-	//DeletedAt *time.Time `json:"deleted_at"`
+	CreatedAt *time.Time `json:"created_at,omitempty"`
+	DeletedAt *time.Time `json:"deleted_at"`
 	Email     *string    `json:"email,omitempty"`
 	Id        *uint      `json:"id,omitempty"`
 	Password  *string    `json:"password,omitempty"`
-	//UpdatedAt *time.Time `json:"updated_at,omitempty"`
+	Tasks     *[]Task    `json:"tasks,omitempty"`
+	UpdatedAt *time.Time `json:"updated_at,omitempty"`
 }
 
 // PostUsersJSONRequestBody defines body for PostUsers for application/json ContentType.
@@ -178,10 +190,10 @@ type DeleteUsersIdResponseObject interface {
 	VisitDeleteUsersIdResponse(w http.ResponseWriter) error
 }
 
-type DeleteUsersId200Response struct {
+type DeleteUsersId204Response struct {
 }
 
-func (response DeleteUsersId200Response) VisitDeleteUsersIdResponse(w http.ResponseWriter) error {
+func (response DeleteUsersId204Response) VisitDeleteUsersIdResponse(w http.ResponseWriter) error {
 	w.WriteHeader(204)
 	return nil
 }
