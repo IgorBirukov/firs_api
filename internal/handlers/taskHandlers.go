@@ -11,14 +11,35 @@ type Handler struct {
 	Service *taskService.TaskService
 }
 
-// GetTasksId implements tasks.StrictServerInterface.
-func (h *Handler) GetTasksId(ctx context.Context, request tasks.GetTasksIdRequestObject) (tasks.GetTasksIdResponseObject, error) {
-	allTasks, err := h.Service.GetTasksByUserID(uint(request.Id))
+// GetTasks implements tasks.StrictServerInterface.
+func (h *Handler) GetTasks(ctx context.Context, request tasks.GetTasksRequestObject) (tasks.GetTasksResponseObject, error) {
+	allTasks, err := h.Service.GetAllTask()
 	if err != nil {
 		return nil, err
 	}
 
-	responce := tasks.GetTasksId200JSONResponse{}
+	responce := tasks.GetTasks200JSONResponse{}
+
+	for _, tsk := range allTasks {
+		task := tasks.Task{
+			Id:     &tsk.ID,
+			Task:   &tsk.Task,
+			IsDone: &tsk.IsDone,
+		}
+		responce = append(responce, task)
+	}
+
+	return responce, nil
+}
+
+// GetUsersUserIdTasks implements tasks.StrictServerInterface.
+func (h *Handler) GetUsersUserIdTasks(ctx context.Context, request tasks.GetUsersUserIdTasksRequestObject) (tasks.GetUsersUserIdTasksResponseObject, error) {
+	allTasks, err := h.Service.GetTasksByUserID(uint(request.UserId))
+	if err != nil {
+		return nil, err
+	}
+
+	responce := tasks.GetUsersUserIdTasks200JSONResponse{}
 
 	for _, tsk := range allTasks {
 		task := tasks.Task{
@@ -97,7 +118,8 @@ func (h *Handler) GetTasks(ctx context.Context, request tasks.GetTasksRequestObj
 
 	return responce, nil
 }
-*/
+
+
 
 // GetTasks implements tasks.StrictServerInterface.
 func (h *Handler) GetTasksByUserID(ctx context.Context, request tasks.GetTasksIdRequestObject) (tasks.GetTasksIdResponseObject, error) {
@@ -119,6 +141,7 @@ func (h *Handler) GetTasksByUserID(ctx context.Context, request tasks.GetTasksId
 
 	return responce, nil
 }
+*/
 
 // PostTasks implements tasks.StrictServerInterface.
 func (h *Handler) PostTasks(ctx context.Context, request tasks.PostTasksRequestObject) (tasks.PostTasksResponseObject, error) {
